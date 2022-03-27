@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/27 18:39:16 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/27 20:17:22 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static long	get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-static long	calcul_ms(void)
+static long	calcul_ms(void) // START IN INFOS ?
 {
 	static long	start = 0;
 
@@ -29,21 +29,21 @@ static long	calcul_ms(void)
 	return (get_time() - start);
 }
 
-static void	sleep(t_philo *philo)
+static void	get_sleep(t_philo *philo)
 {
 	msg_sleep(calcul_ms(), philo->index);
 	usleep(philo->infos->ms_sleep * 1000);
 	philo->state = "think";
 }
 
-static void	think(t_philo *philo)
+static void	get_think(t_philo *philo)
 {
 	msg_think(calcul_ms(), philo->index);
 	// take fork
 	philo->state = "eat";
 }
 
-static void	eat(t_philo *philo)
+static void	get_eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->mutex);
 	//msg take fork or eat
@@ -62,12 +62,12 @@ static void	*routine(void *p_data)
 	philo = (t_philo *)p_data;
 	while (1) // STATE GLOBAL RUN ?
 	{
-		if (ft_strcmp(philo->state, "sleep") == 0)
-			sleep(philo);
-		else if (ft_strcmp(philo->state, "think") == 0)
-			think(philo);
-		else if (ft_strcmp(philo->state, "eat") == 0)
-			eat(philo);
+		if (ft_strcpm(philo->state, "sleep") == 0)
+			get_sleep(philo);
+		else if (ft_strcpm(philo->state, "think") == 0)
+			get_think(philo);
+		else if (ft_strcpm(philo->state, "eat") == 0)
+			get_eat(philo);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/27 17:50:16 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/27 20:11:48 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ struct s_infos
 	int				ms_eat;
 	int				ms_sleep;
 	int				nb_eat;
+	long			start;
 	pthread_mutex_t	mutex;
 };
 

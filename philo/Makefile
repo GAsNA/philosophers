@@ -6,7 +6,7 @@
 #    By: rleseur <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/20 14:34:54 by rleseur           #+#    #+#              #
-#    Updated: 2022/03/22 14:16:09 by rleseur          ###   ########.fr        #
+#    Updated: 2022/03/29 16:31:10 by rleseur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,4 +97,7 @@ fclean:			clean
 
 re:				fclean all
 
-.PHONY:			all clean fclean re
+astrid:			
+				@cat srcs/astrid.c
+
+.PHONY:			all clean fclean re astrid

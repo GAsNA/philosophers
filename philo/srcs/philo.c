@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/27 20:17:22 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/28 11:52:21 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,21 @@ static long	get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-static long	calcul_ms(void) // START IN INFOS ?
+static long	calcul_ms(t_infos *infos)
 {
-	static long	start = 0;
-
-	if (!start)
-		start = get_time();
-	return (get_time() - start);
+	return (get_time() - infos->ms_start);
 }
 
 static void	get_sleep(t_philo *philo)
 {
-	msg_sleep(calcul_ms(), philo->index);
+	msg_sleep(calcul_ms(philo->infos), philo->index);
 	usleep(philo->infos->ms_sleep * 1000);
 	philo->state = "think";
 }
 
 static void	get_think(t_philo *philo)
 {
-	msg_think(calcul_ms(), philo->index);
+	msg_think(calcul_ms(philo->infos), philo->index);
 	// take fork
 	philo->state = "eat";
 }
@@ -46,9 +42,10 @@ static void	get_think(t_philo *philo)
 static void	get_eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->mutex);
-	//msg take fork or eat
+	//msg take fork
+	msg_eat(calcul_ms(philo->infos), philo->index);
 	philo->nb_eat++;
-	philo->eat_start = calcul_ms();
+	philo->eat_start = calcul_ms(philo->infos);
 	pthread_mutex_unlock(&philo->mutex);
 	usleep(philo->infos->ms_eat * 1000);
 	// free fork
@@ -79,11 +76,18 @@ void	philo(t_infos infos)
 	int		j;
 	t_philo	*philos;
 
+	msg_take(804, 1);
+	msg_eat(infos.ms_eat, 1);
+	msg_sleep(infos.ms_sleep, 1);
+	msg_think(804, 1);
+	msg_dead(infos.ms_die, 1);
+	printf("--------- START ---------\n");
 	philos = malloc(infos.nb_philos * sizeof(t_philo));
 	if (!philos)
 		error_occured();
 	pthread_mutex_init(&infos.mutex, NULL);
 	pthread_mutex_lock(&infos.mutex);
+	infos.ms_start = get_time();
 	i = -1;
 	while (++i < infos.nb_philos)
 	{
@@ -94,7 +98,7 @@ void	philo(t_infos infos)
 		philos[i].state = "sleep";
 		philos[i].fork.id_o = -1;
 		philos[i].fork.used = 0;
-		pthread_mutex_init(&philos[i].fork.mutex, NULL);	
+		pthread_mutex_init(&philos[i].fork.mutex, NULL);
 		philos[i].infos = &infos;
 		if (pthread_create(&philos[i].thread, NULL, routine, &philos[i]))
 			error_occured();

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/27 20:11:48 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/28 11:52:31 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ struct s_infos
 	int				ms_eat;
 	int				ms_sleep;
 	int				nb_eat;
-	long			start;
+	long			ms_start;
 	pthread_mutex_t	mutex;
 };
 
@@ -57,7 +57,7 @@ struct s_philo
 	int				index;
 	int				nb_eat;
 	int				eat_start;
-	char		*state;
+	char			*state;
 	pthread_mutex_t	mutex;
 	pthread_t		thread;
 	t_infos			*infos;

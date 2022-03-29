@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/28 11:52:21 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/29 22:47:53 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,30 @@ static long	calcul_ms(t_infos *infos)
 	return (get_time() - infos->ms_start);
 }
 
+static int	if_ate_enough(t_philo *philo) // On all philos...
+{
+	/*int	i;
+
+	i = -1;
+	while (++i < infos->nb_philos)
+	{
+		if ()
+	}*/
+	if (philo->nb_eat == philo->infos->nb_eat)
+		return (1);
+	return (0);
+}
+
+/*static int	if_is_dead(t_philo *philo)
+{
+	if (calcul_ms(philo->infos) - philo->eat_start > philo->infos->ms_die)
+	{
+		msg_dead(calcul_ms(philo->infos), philo->index);
+		return (1);
+	}
+	return (0);
+}*/
+
 static void	get_sleep(t_philo *philo)
 {
 	msg_sleep(calcul_ms(philo->infos), philo->index);
@@ -39,10 +63,13 @@ static void	get_think(t_philo *philo)
 	philo->state = "eat";
 }
 
-static void	get_eat(t_philo *philo)
+static int	get_eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->mutex);
-	//msg take fork
+	if(if_ate_enough(philo))
+		return (0);
+	msg_take(calcul_ms(philo->infos), philo->index);
+	msg_take(calcul_ms(philo->infos), philo->index);
 	msg_eat(calcul_ms(philo->infos), philo->index);
 	philo->nb_eat++;
 	philo->eat_start = calcul_ms(philo->infos);
@@ -50,6 +77,7 @@ static void	get_eat(t_philo *philo)
 	usleep(philo->infos->ms_eat * 1000);
 	// free fork
 	philo->state = "sleep";
+	return (1);
 }
 
 static void	*routine(void *p_data)
@@ -64,7 +92,8 @@ static void	*routine(void *p_data)
 		else if (ft_strcpm(philo->state, "think") == 0)
 			get_think(philo);
 		else if (ft_strcpm(philo->state, "eat") == 0)
-			get_eat(philo);
+			if(!get_eat(philo))
+				break;
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/29 22:47:53 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/03/30 14:37:02 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,54 +25,90 @@ static long	calcul_ms(t_infos *infos)
 	return (get_time() - infos->ms_start);
 }
 
-static int	if_ate_enough(t_philo *philo) // On all philos...
+static int	ate_enough(t_philo *philos)
 {
-	/*int	i;
+	int	i;
 
 	i = -1;
-	while (++i < infos->nb_philos)
+	//pthread_mutex_lock(&philos[0].infos->mutex);	
+	while (++i < philos[0].infos->nb_philos)
 	{
-		if ()
-	}*/
-	if (philo->nb_eat == philo->infos->nb_eat)
-		return (1);
+		if (philos[i].run && philos[i].nb_eat == philos[0].infos->nb_eat)
+		{
+			philos[i].run = 0;
+			//pthread_mutex_unlock(&philos[0].infos->mutex);	
+			return (1);
+		}
+	}
+	//pthread_mutex_unlock(&philos[0].infos->mutex);	
 	return (0);
 }
 
-/*static int	if_is_dead(t_philo *philo)
+static int	is_dead(t_philo *philos)
 {
-	if (calcul_ms(philo->infos) - philo->eat_start > philo->infos->ms_die)
-	{
-		msg_dead(calcul_ms(philo->infos), philo->index);
-		return (1);
-	}
-	return (0);
-}*/
+	int	i;
 
-static void	get_sleep(t_philo *philo)
+	i = -1;
+	//pthread_mutex_lock(&philos[0].infos->mutex);	
+	while (++i < philos[0].infos->nb_philos)
+	{
+		if (philos[i].run && calcul_ms(philos[0].infos) - philos[i].eat_time >= philos[0].infos->ms_die)
+		{
+			msg_dead(calcul_ms(philos[0].infos), philos[i].index);
+			philos[i].run = 0;
+		//	pthread_mutex_unlock(&philos[0].infos->mutex);
+			return (1);
+		}
+	}
+	//pthread_mutex_unlock(&philos[0].infos->mutex);	
+	return (0);
+}
+
+static int	one_is_good(t_philo *philos)
 {
+	int	i;
+
+	i = -1;
+	while (++i < philos[0].infos->nb_philos)
+		if (philos[i].run)
+			return (1);
+	return (0);
+}
+
+static int	get_sleep(t_philo *philo)
+{
+	if(!philo->run)
+		return (0);
 	msg_sleep(calcul_ms(philo->infos), philo->index);
 	usleep(philo->infos->ms_sleep * 1000);
 	philo->state = "think";
+	if (!philo->run)
+		return (0);
+	return (1);
 }
 
-static void	get_think(t_philo *philo)
+static int	get_think(t_philo *philo)
 {
+	if (!philo->run)
+		return (0);
 	msg_think(calcul_ms(philo->infos), philo->index);
-	// take fork
 	philo->state = "eat";
+	if (!philo->run)
+		return (0);
+	return (1);
 }
 
 static int	get_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->mutex);
-	if(if_ate_enough(philo))
+	if (!philo->run)
 		return (0);
+	pthread_mutex_lock(&philo->mutex);	
+	// take fork
 	msg_take(calcul_ms(philo->infos), philo->index);
 	msg_take(calcul_ms(philo->infos), philo->index);
 	msg_eat(calcul_ms(philo->infos), philo->index);
 	philo->nb_eat++;
-	philo->eat_start = calcul_ms(philo->infos);
+	philo->eat_time = calcul_ms(philo->infos);
 	pthread_mutex_unlock(&philo->mutex);
 	usleep(philo->infos->ms_eat * 1000);
 	// free fork
@@ -85,12 +121,18 @@ static void	*routine(void *p_data)
 	t_philo			*philo;
 
 	philo = (t_philo *)p_data;
-	while (1) // STATE GLOBAL RUN ?
+	while (1)
 	{
 		if (ft_strcpm(philo->state, "sleep") == 0)
-			get_sleep(philo);
+		{
+			if (!get_sleep(philo))
+				break;
+		}
 		else if (ft_strcpm(philo->state, "think") == 0)
-			get_think(philo);
+		{
+			if (!get_think(philo))
+				break;
+		}
 		else if (ft_strcpm(philo->state, "eat") == 0)
 			if(!get_eat(philo))
 				break;
@@ -122,9 +164,10 @@ void	philo(t_infos infos)
 	{
 		philos[i].index = i + 1;
 		philos[i].nb_eat = 0;
-		philos[i].eat_start = 0;
+		philos[i].eat_time = 0;
+		philos[i].run = 1;
 		pthread_mutex_init(&philos[i].mutex, NULL);
-		philos[i].state = "sleep";
+		philos[i].state = "eat";
 		philos[i].fork.id_o = -1;
 		philos[i].fork.used = 0;
 		pthread_mutex_init(&philos[i].fork.mutex, NULL);
@@ -133,9 +176,8 @@ void	philo(t_infos infos)
 			error_occured();
 	}
 	pthread_mutex_unlock(&infos.mutex);
-	//**********************************
-	// Test if dead and ate too much
-	//**********************************
+	while ((!ate_enough(philos) && !is_dead(philos)) || one_is_good(philos))
+		usleep(100);
 	j = -1;
 	while (++j < infos.nb_philos)
 		if (pthread_join(philos[j].thread, NULL))

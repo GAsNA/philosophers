@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/30 09:47:36 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/01 04:40:08 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,13 @@ struct s_infos
 	int				ms_sleep;
 	int				nb_eat;
 	long			ms_start;
+	t_philo			*philos;
 	pthread_mutex_t	mutex;
 };
 
 struct s_fork
 {
-	int				id_o;
+	int				id;
 	int				used;
 	pthread_mutex_t	mutex;
 };

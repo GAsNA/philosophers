@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/30 14:37:02 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/01 05:09:07 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,20 +98,66 @@ static int	get_think(t_philo *philo)
 	return (1);
 }
 
+static int	take_fork(t_philo *philo)
+{
+	int		suc;
+	int		id;
+	t_philo	*next;
+
+	suc = 0;
+	id = 0;
+	if (philo->index != philo->infos->nb_philos)
+		id = philo->index;
+	next = &philo->infos->philos[id];
+	pthread_mutex_lock(&philo->fork.mutex);
+	pthread_mutex_lock(&next->fork.mutex);
+	if (philo->fork.id != philo->index && !philo->fork.used && next->fork.id != philo->index && !next->fork.used)
+	{
+		philo->fork.id = philo->index;
+		next->fork.id = philo->index;
+		philo->fork.used = 1;
+		next->fork.used = 1;
+		suc = 1;
+		msg_take(calcul_ms(philo->infos), philo->index);
+		msg_take(calcul_ms(philo->infos), philo->index);
+	}
+	pthread_mutex_unlock(&philo->fork.mutex);
+	pthread_mutex_unlock(&philo->fork.mutex);
+	return (suc);
+}
+
+static void	free_fork(t_philo *philo)
+{
+	int		id;
+	t_philo	*next;
+
+	id = 0;
+	if (philo->index != philo->infos->nb_philos)
+		id = philo->index;
+	next = &philo->infos->philos[id];
+	pthread_mutex_lock(&philo->fork.mutex);
+	pthread_mutex_lock(&next->fork.mutex);
+	philo->fork.used = 0;
+	next->fork.used = 0;
+	pthread_mutex_unlock(&philo->fork.mutex);
+	pthread_mutex_unlock(&next->fork.mutex);	
+}
+
 static int	get_eat(t_philo *philo)
 {
 	if (!philo->run)
 		return (0);
 	pthread_mutex_lock(&philo->mutex);	
 	// take fork
-	msg_take(calcul_ms(philo->infos), philo->index);
-	msg_take(calcul_ms(philo->infos), philo->index);
+	while (!take_fork(philo))
+		usleep(1000);
 	msg_eat(calcul_ms(philo->infos), philo->index);
 	philo->nb_eat++;
 	philo->eat_time = calcul_ms(philo->infos);
 	pthread_mutex_unlock(&philo->mutex);
 	usleep(philo->infos->ms_eat * 1000);
 	// free fork
+	free_fork(philo);
 	philo->state = "sleep";
 	return (1);
 }
@@ -123,7 +169,7 @@ static void	*routine(void *p_data)
 	philo = (t_philo *)p_data;
 	while (1)
 	{
-		if (ft_strcpm(philo->state, "sleep") == 0)
+		if (ft_strcpm(philo->state, "sleep") == 0) //STRCMP
 		{
 			if (!get_sleep(philo))
 				break;
@@ -159,6 +205,7 @@ void	philo(t_infos infos)
 	pthread_mutex_init(&infos.mutex, NULL);
 	pthread_mutex_lock(&infos.mutex);
 	infos.ms_start = get_time();
+	infos.philos = philos;
 	i = -1;
 	while (++i < infos.nb_philos)
 	{
@@ -168,7 +215,7 @@ void	philo(t_infos infos)
 		philos[i].run = 1;
 		pthread_mutex_init(&philos[i].mutex, NULL);
 		philos[i].state = "eat";
-		philos[i].fork.id_o = -1;
+		philos[i].fork.id = -1;
 		philos[i].fork.used = 0;
 		pthread_mutex_init(&philos[i].fork.mutex, NULL);
 		philos[i].infos = &infos;

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/01 04:40:08 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/02 03:11:59 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ struct s_philo
 	int				nb_eat;
 	int				eat_time;
 	int				run;
+	int				dead;
 	char			*state;
 	pthread_mutex_t	mutex;
 	pthread_t		thread;

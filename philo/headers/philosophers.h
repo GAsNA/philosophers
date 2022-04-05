@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/02 03:11:59 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/05 15:18:11 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ struct s_infos
 	long			ms_start;
 	t_philo			*philos;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	mutex_ate;
+	pthread_mutex_t	mutex_dead;
 };
 
 struct s_fork
@@ -79,7 +81,7 @@ void	msg_take(int ms, int index);
 
 /* utils.c */
 int		ft_atoi(char *nptr);
-int		ft_strcpm(char *s1, char *s2);
+int		ft_strcmp(char *s1, char *s2);
 
 /* check_args.c */
 int		are_valid_args(char **av);

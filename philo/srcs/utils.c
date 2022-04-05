@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:41:31 by rleseur           #+#    #+#             */
-/*   Updated: 2022/02/14 12:45:16 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/05 15:18:22 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ft_atoi(char *nptr)
 	return (res * sign);
 }
 
-int	ft_strcpm(char *s1, char *s2)
+int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
 

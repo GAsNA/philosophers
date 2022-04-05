@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:50:03 by rleseur           #+#    #+#             */
-/*   Updated: 2022/03/17 11:30:47 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/05 15:55:12 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ static int	ft_isdigit(char c)
 		return (1);
 	return (0);
 }
+
+// verif all digits
+// not null
+// != 0
+// overflow
+// eat == 0
+
+//reduire decalage: 5 800 200 200
 
 int	are_valid_args(char **av)
 {

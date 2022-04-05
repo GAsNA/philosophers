@@ -6,7 +6,7 @@
 #    By: rleseur <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/20 14:34:54 by rleseur           #+#    #+#              #
-#    Updated: 2022/04/02 02:35:35 by rleseur          ###   ########.fr        #
+#    Updated: 2022/04/05 15:45:55 by rleseur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,14 +84,13 @@ NAME			=	philosophers
 
 CC				=	clang
 RM				=	rm -rf
-CFLAGS			=	-Wall -Wextra -Werror #-fsanitize=thread -g3
+CFLAGS			=	-Wall -Wextra -Werror #-fsanitize=address #-fsanitize=thread -g3
 
 ### Commandes
 
 all:			${NAME}
 
 ${NAME}:		${OBJS}
-				@echo ${PHILO}
 				${CC} ${CFLAGS} -lpthread ${OBJS} -o ${NAME}
 				${CREATED_BIN}
 
@@ -110,6 +109,6 @@ fclean:			clean
 re:				fclean all
 
 astrid:			
-				@cat srcs/astrid.c
+				@cat srcs/astrid.txt
 
 .PHONY:			all clean fclean re astrid

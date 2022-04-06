@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 11:33:45 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/06 17:24:51 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,25 @@ static void	*routine(void *p_data)
 	t_philo			*philo;
 
 	philo = (t_philo *)p_data;
+	pthread_mutex_lock(&philo->infos->mutex);
+	pthread_mutex_unlock(&philo->infos->mutex);
+	if (philo->infos->nb_philos % 2 == 0 || philo->infos->nb_philos == 1)
+	{
+		if (philo->index % 2 == 0)
+			ft_usleep(philo->infos->ms_eat * 1000);
+	}
+	else
+	{
+		if (philo->index % 3 == 1)
+			ft_usleep(philo->infos->ms_eat * 1000);
+		if (philo->index % 3 == 2)
+			ft_usleep(philo->infos->ms_eat * 2 * 1000);
+	}
 	if (philo->nb_eat == philo->infos->nb_eat)
 		return (0);
+	pthread_mutex_lock(&philo->infos->mutex_dead);
+	philo->eat_time = calcul_ms(philo->infos);
+	pthread_mutex_unlock(&philo->infos->mutex_dead);
 	while (1)
 	{
 		if (ft_strcmp(philo->state, "sleep") == 0)
@@ -73,15 +90,16 @@ void	philo(t_infos infos)
 	if (!philos)
 		error_occured();
 	init(&infos, philos);
+	pthread_mutex_lock(&infos.mutex);
 	i = -1;
 	while (++i < infos.nb_philos)
 	{
-		usleep(100);
 		if (pthread_create(&philos[i].thread, NULL, routine, &philos[i]))
 			error_occured();
 	}
+	pthread_mutex_unlock(&infos.mutex);
 	while ((!ate_enough(philos) && !is_dead(philos)) || one_is_good(philos))
-		usleep(100);
+		ft_usleep(200);
 	i = -1;
 	while (++i < infos.nb_philos)
 		if (pthread_join(philos[i].thread, NULL))

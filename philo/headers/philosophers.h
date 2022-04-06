@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 11:34:45 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/06 16:52:50 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int			one_is_good(t_philo *philos);
 /* time.c */
 long		get_time(void);
 long		calcul_ms(t_infos *infos);
+void		ft_usleep(unsigned wait);
 
 /* messages.c */
 void		msg_dead(int ms, int index);

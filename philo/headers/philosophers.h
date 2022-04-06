@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/05 15:18:11 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/06 11:34:45 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,25 +70,46 @@ struct s_philo
 };
 
 /* philo.c */
-void	philo(t_infos infos);
+void		philo(t_infos infos);
+
+/* actions.c */
+int			get_sleep(t_philo *philo);
+int			get_think(t_philo *philo);
+int			get_eat(t_philo *philo);
+
+/* forks.c */
+int			first_fork(t_philo *p1, t_philo *philo, t_philo *next);
+int			second_fork(t_philo *p1, t_philo *p2, t_philo *philo);
+int			take_fork(t_philo *philo);
+void		free_fork(t_philo *philo);
+
+/* check_process.c */
+int			ate_enough(t_philo *philos);
+int			is_dead(t_philo *philos);
+int			one_is_good(t_philo *philos);
+
+/* time.c */
+long		get_time(void);
+long		calcul_ms(t_infos *infos);
 
 /* messages.c */
-void	msg_dead(int ms, int index);
-void	msg_think(int ms, int index);
-void	msg_sleep(int ms, int index);
-void	msg_eat(int ms, int index);
-void	msg_take(int ms, int index);
+void		msg_dead(int ms, int index);
+void		msg_think(int ms, int index);
+void		msg_sleep(int ms, int index);
+void		msg_eat(int ms, int index);
+void		msg_take(int ms, int index);
 
 /* utils.c */
-int		ft_atoi(char *nptr);
-int		ft_strcmp(char *s1, char *s2);
+int			ft_atoi(char *nptr);
+long long	ft_atoll(char *nptr);
+int			ft_strcmp(char *s1, char *s2);
 
 /* check_args.c */
-int		are_valid_args(char **av);
+int			are_valid_args(char **av);
 
 /* errors.c */
-void	error(void);
-void	error_args(void);
-void	error_occured(void);
+void		error(void);
+void		error_args(void);
+void		error_occured(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:41:31 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/05 15:18:22 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/06 09:15:32 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,34 @@ int	ft_atoi(char *nptr)
 	int	res;
 	int	sign;
 	int	i;
+
+	i = 0;
+	while (nptr[i] == ' ' || nptr[i] == '\t' || nptr[i] == '\v'
+		|| nptr[i] == '\n' || nptr[i] == '\r' || nptr[i] == '\f')
+		i++;
+	sign = 1;
+	if (nptr[i] == '+')
+		i++;
+	else if (nptr[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	res = 0;
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+	{
+		res *= 10;
+		res += nptr[i] - '0';
+		i++;
+	}
+	return (res * sign);
+}
+
+long long	ft_atoll(char *nptr)
+{
+	long long	res;
+	int			sign;
+	int			i;
 
 	i = 0;
 	while (nptr[i] == ' ' || nptr[i] == '\t' || nptr[i] == '\v'

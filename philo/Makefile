@@ -6,7 +6,7 @@
 #    By: rleseur <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/20 14:34:54 by rleseur           #+#    #+#              #
-#    Updated: 2022/04/05 15:45:55 by rleseur          ###   ########.fr        #
+#    Updated: 2022/04/06 11:35:35 by rleseur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,6 +70,10 @@ SRCS_PATH		=	./srcs/
 OBJS_PATH		=	./objs/
 FILES			=	main.c			\
 					philo.c			\
+					actions.c		\
+					forks.c			\
+					check_process.c	\
+					time.c			\
 					messages.c		\
 					utils.c			\
 					check_args.c	\
@@ -84,7 +88,7 @@ NAME			=	philosophers
 
 CC				=	clang
 RM				=	rm -rf
-CFLAGS			=	-Wall -Wextra -Werror #-fsanitize=address #-fsanitize=thread -g3
+CFLAGS			=	-Wall -Wextra -Werror -fsanitize=thread -g3 #-fsanitize=address #-fsanitize=thread -g3
 
 ### Commandes
 

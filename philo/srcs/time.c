@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/11 16:08:22 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 09:26:59 by rleseur          ###   ########.fr       */
+/*   Created: 2022/04/06 11:33:53 by rleseur           #+#    #+#             */
+/*   Updated: 2022/04/06 11:34:12 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	main(int ac, char **av)
+long	get_time(void)
 {
-	t_infos	infos;
+	struct timeval	tv;
 
-	if (ac < 5 || ac > 6 || !are_valid_args(av))
-		error_args();
-	infos.nb_philos = ft_atoi(av[1]);
-	infos.ms_die = ft_atoi(av[2]);
-	infos.ms_eat = ft_atoi(av[3]);
-	infos.ms_sleep = ft_atoi(av[4]);
-	infos.nb_eat = -1;
-	if (ac == 6)
-		infos.nb_eat = ft_atoi(av[5]);
-	philo(infos);
-	return (0);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+long	calcul_ms(t_infos *infos)
+{
+	return (get_time() - infos->ms_start);
 }

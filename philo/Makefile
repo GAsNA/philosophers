@@ -6,7 +6,7 @@
 #    By: rleseur <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/20 14:34:54 by rleseur           #+#    #+#              #
-#    Updated: 2022/04/08 09:40:50 by rleseur          ###   ########.fr        #
+#    Updated: 2022/04/08 13:41:28 by rleseur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,7 +84,7 @@ OBJS			=	${addprefix ${OBJS_PATH}, ${FILES:.c=.o}}
 HEADER_PATH		=	./headers/
 HEADER			=	${HEADER_PATH}philosophers.h
 
-NAME			=	philosophers
+NAME			=	philo
 
 CC				=	clang
 RM				=	rm -rf

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 11:33:53 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/08 09:28:47 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 13:49:27 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,5 @@ void	ft_usleep(long wait)
 		return ;
 	gettimeofday(&time, NULL);
 	while (get_time_micro(&time) < wait)
-		usleep(500); // 100 !!!
+		usleep(200);
 }

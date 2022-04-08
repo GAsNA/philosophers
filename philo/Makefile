@@ -6,7 +6,7 @@
 #    By: rleseur <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/20 14:34:54 by rleseur           #+#    #+#              #
-#    Updated: 2022/04/08 13:41:28 by rleseur          ###   ########.fr        #
+#    Updated: 2022/04/08 14:14:13 by rleseur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,7 +88,7 @@ NAME			=	philo
 
 CC				=	clang
 RM				=	rm -rf
-CFLAGS			=	-Wall -Wextra -Werror #-pg #-fsanitize=thread -g3 #-fsanitize=address
+CFLAGS			=	-Wall -Wextra -Werror -g3 #-fsanitize=address
 
 ### Commandes
 

@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/08 09:44:29 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 14:22:26 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ int			are_valid_args(char **av);
 
 /* errors.c */
 void		error(void);
+void		error_nb_args(void);
 void		error_args(void);
 void		error_occured(void);
 

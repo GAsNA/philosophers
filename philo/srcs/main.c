@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:08:22 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 09:26:59 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 14:18:30 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ int	main(int ac, char **av)
 {
 	t_infos	infos;
 
-	if (ac < 5 || ac > 6 || !are_valid_args(av))
+	if (ac < 5 || ac > 6)
+		error_nb_args();
+	if (!are_valid_args(av))
 		error_args();
 	infos.nb_philos = ft_atoi(av[1]);
 	infos.ms_die = ft_atoi(av[2]);

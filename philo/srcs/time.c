@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 11:33:53 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 16:51:22 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 09:28:47 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,19 @@ long	get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-long	calcul_ms(t_infos *infos)
+long	calcul_ms(void)
 {
-	return (get_time() - infos->ms_start);
+	static long	start;
+
+	if (!start)
+		start = get_time();
+	return (get_time() - start);
 }
 
-static unsigned	ft_gettime(struct timeval *start_time)
+static long	get_time_micro(struct timeval *start_time)
 {
 	struct timeval	current;
-	unsigned		time;
+	long			time;
 
 	gettimeofday(&current, NULL);
 	time = (((current.tv_sec - start_time->tv_sec) * 1000000)
@@ -36,11 +40,13 @@ static unsigned	ft_gettime(struct timeval *start_time)
 	return (time);
 }
 
-void	ft_usleep(unsigned wait)
+void	ft_usleep(long wait)
 {
 	struct timeval	time;
 
+	if (wait <= 0)
+		return ;
 	gettimeofday(&time, NULL);
-	while (ft_gettime(&time) < wait)
-		usleep(100);
+	while (get_time_micro(&time) < wait)
+		usleep(500); // 100 !!!
 }

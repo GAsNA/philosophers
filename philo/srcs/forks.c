@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 11:25:16 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 11:35:59 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/07 17:46:54 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	first_fork(t_philo *p1, t_philo *philo, t_philo *next)
 		return (0);
 	}
 	pthread_mutex_unlock(&philo->infos->mutex);
-	msg_take(calcul_ms(philo->infos), philo->index);
+	msg_take(calcul_ms(), philo->index, philo);
 	if (next->index == philo->index)
 	{
 		pthread_mutex_unlock(&p1->fork.mutex);
@@ -44,7 +44,7 @@ int	second_fork(t_philo *p1, t_philo *p2, t_philo *philo)
 		return (0);
 	}
 	pthread_mutex_unlock(&philo->infos->mutex);
-	msg_take(calcul_ms(philo->infos), philo->index);
+	msg_take(calcul_ms(), philo->index, philo);
 	return (1);
 }
 

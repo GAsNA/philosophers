@@ -6,17 +6,16 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:15:38 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 17:24:51 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 09:45:28 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void	*routine(void *p_data)
+static int	beginning(t_philo *philo)
 {
-	t_philo			*philo;
-
-	philo = (t_philo *)p_data;
+	if (philo->nb_eat == philo->infos->nb_eat)
+		return (0);
 	pthread_mutex_lock(&philo->infos->mutex);
 	pthread_mutex_unlock(&philo->infos->mutex);
 	if (philo->infos->nb_philos % 2 == 0 || philo->infos->nb_philos == 1)
@@ -31,11 +30,19 @@ static void	*routine(void *p_data)
 		if (philo->index % 3 == 2)
 			ft_usleep(philo->infos->ms_eat * 2 * 1000);
 	}
-	if (philo->nb_eat == philo->infos->nb_eat)
-		return (0);
 	pthread_mutex_lock(&philo->infos->mutex_dead);
-	philo->eat_time = calcul_ms(philo->infos);
+	philo->eat_time = calcul_ms();
 	pthread_mutex_unlock(&philo->infos->mutex_dead);
+	return (1);
+}
+
+static void	*routine(void *p_data)
+{
+	t_philo			*philo;
+
+	philo = (t_philo *)p_data;
+	if (!beginning(philo))
+		return (0);
 	while (1)
 	{
 		if (ft_strcmp(philo->state, "sleep") == 0)
@@ -60,9 +67,9 @@ static void	init(t_infos *infos, t_philo *philos)
 	int	i;
 
 	pthread_mutex_init(&infos->mutex, NULL);
+	pthread_mutex_init(&infos->mutex_w, NULL);
 	pthread_mutex_init(&infos->mutex_ate, NULL);
 	pthread_mutex_init(&infos->mutex_dead, NULL);
-	infos->ms_start = get_time();
 	infos->philos = philos;
 	i = -1;
 	while (++i < infos->nb_philos)
@@ -72,13 +79,26 @@ static void	init(t_infos *infos, t_philo *philos)
 		philos[i].eat_time = 0;
 		philos[i].run = 1;
 		philos[i].dead = 0;
-		pthread_mutex_init(&philos[i].mutex, NULL);
 		philos[i].state = "eat";
 		philos[i].fork.id = -1;
 		philos[i].fork.used = 0;
 		pthread_mutex_init(&philos[i].fork.mutex, NULL);
 		philos[i].infos = infos;
 	}
+}
+
+static void	destroy(t_infos *infos, t_philo *philos)
+{
+	int	i;
+
+	pthread_mutex_destroy(&infos->mutex);
+	pthread_mutex_destroy(&infos->mutex_w);
+	pthread_mutex_destroy(&infos->mutex_ate);
+	pthread_mutex_destroy(&infos->mutex_dead);
+	i = -1;
+	while (++i < infos->nb_philos)
+		pthread_mutex_destroy(&philos[i].fork.mutex);
+	free(philos);
 }
 
 void	philo(t_infos infos)
@@ -93,20 +113,14 @@ void	philo(t_infos infos)
 	pthread_mutex_lock(&infos.mutex);
 	i = -1;
 	while (++i < infos.nb_philos)
-	{
 		if (pthread_create(&philos[i].thread, NULL, routine, &philos[i]))
 			error_occured();
-	}
 	pthread_mutex_unlock(&infos.mutex);
 	while ((!ate_enough(philos) && !is_dead(philos)) || one_is_good(philos))
-		ft_usleep(200);
+		ft_usleep(100);
 	i = -1;
 	while (++i < infos.nb_philos)
 		if (pthread_join(philos[i].thread, NULL))
 			error_occured();
-	pthread_mutex_destroy(&infos.mutex);
-	i = -1;
-	while (++i < infos.nb_philos)
-		pthread_mutex_destroy(&philos[i].fork.mutex);
-	free(philos);
+	destroy(&infos, philos);
 }

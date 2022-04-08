@@ -6,7 +6,7 @@
 /*   By: rleseur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 16:09:41 by rleseur           #+#    #+#             */
-/*   Updated: 2022/04/06 16:52:50 by rleseur          ###   ########.fr       */
+/*   Updated: 2022/04/08 09:44:29 by rleseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ struct s_infos
 	int				ms_eat;
 	int				ms_sleep;
 	int				nb_eat;
-	long			ms_start;
 	t_philo			*philos;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	mutex_w;
 	pthread_mutex_t	mutex_ate;
 	pthread_mutex_t	mutex_dead;
 };
@@ -63,7 +63,6 @@ struct s_philo
 	int				run;
 	int				dead;
 	char			*state;
-	pthread_mutex_t	mutex;
 	pthread_t		thread;
 	t_infos			*infos;
 	t_fork			fork;
@@ -90,15 +89,15 @@ int			one_is_good(t_philo *philos);
 
 /* time.c */
 long		get_time(void);
-long		calcul_ms(t_infos *infos);
-void		ft_usleep(unsigned wait);
+long		calcul_ms(void);
+void		ft_usleep(long wait);
 
 /* messages.c */
-void		msg_dead(int ms, int index);
-void		msg_think(int ms, int index);
-void		msg_sleep(int ms, int index);
-void		msg_eat(int ms, int index);
-void		msg_take(int ms, int index);
+void		msg_dead(int ms, int index, t_philo *philo);
+void		msg_think(int ms, int index, t_philo *philo);
+void		msg_sleep(int ms, int index, t_philo *philo);
+void		msg_eat(int ms, int index, t_philo *philo);
+void		msg_take(int ms, int index, t_philo *philo);
 
 /* utils.c */
 int			ft_atoi(char *nptr);
